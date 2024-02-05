@@ -1,0 +1,55 @@
+// Online C# Editor for free
+// Write, Edit and Run your C# code using C# Online Compiler
+
+using System;
+using System.IO;
+using System.Security.Cryptography;
+using System.Text;
+
+public class HelloWorld
+{
+    
+    public static string decrypt(string text){
+        
+        string @stringVal;
+        @stringVal=text;
+			using (Aes aes = Aes.Create())
+			{
+				aes.Key = Convert.FromBase64String(<AES_KEY>);
+				aes.Mode = CipherMode.ECB;
+				aes.Padding = PaddingMode.PKCS7;
+				ICryptoTransform cryptoTransform = aes.CreateDecryptor(aes.Key, null);
+				byte[] array;
+				using (MemoryStream memoryStream = new MemoryStream(Convert.FromBase64String(@stringVal)))
+				{
+					using (CryptoStream cryptoStream = new CryptoStream(memoryStream, cryptoTransform, CryptoStreamMode.Read))
+					{
+						using (MemoryStream memoryStream2 = new MemoryStream())
+						{
+							cryptoStream.CopyTo(memoryStream2);
+							array = memoryStream2.ToArray();
+						}
+					}
+				}
+				int num = array.Length;
+				int num2 = array.Length - 1;
+				while (num2 >= 0 && array[num2] == 0)
+				{
+					num--;
+					num2--;
+				}
+				@stringVal = Encoding.UTF8.GetString(array, 0, num);
+			}
+			return @stringVal ;
+        
+    }
+    
+    public static void Main(string[] args)
+    {
+        string[] encrypted_vals={""};
+        foreach (string item in encrypted_vals){
+            Console.WriteLine(decrypt(item)+ "  =>  " + item);
+        }
+        Console.WriteLine("done");
+    }
+}
